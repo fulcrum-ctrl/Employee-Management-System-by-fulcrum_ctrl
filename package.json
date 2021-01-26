@@ -1,0 +1,22 @@
+{
+  "name": "employee-management-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fulcrum-ctrl/Employee-Management-System-by-fulcrum_ctrl.git"
+  },
+  "author": "fulcrum_ctrl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fulcrum-ctrl/Employee-Management-System-by-fulcrum_ctrl/issues"
+  },
+  "homepage": "https://github.com/fulcrum-ctrl/Employee-Management-System-by-fulcrum_ctrl#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
