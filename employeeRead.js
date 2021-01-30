@@ -114,6 +114,11 @@ const initialize = () => {
                     queryAllRoles();
                     break;
 
+                case 'View all employees by department':
+                    console.log("Fetching all available departments...");
+                    employeeByDept();
+                    break;
+
                 case 'Add an employee':
                     console.log("Fetching current employee log...");
                     addEmployee();
@@ -127,7 +132,7 @@ const initialize = () => {
             }
         });
 };
-
+// add validate + role id/manager id later
 const addEmployee = () => {
     console.log("Printing all current employees...");
     // queryAllEmployees();
@@ -167,6 +172,69 @@ const addEmployee = () => {
 
 };
 
+const employeeByDept = () => {
+    inquirer
+        .prompt(
+            {
+                name: 'deptPick',
+                type: 'list',
+                message: 'Pick the department you would like to view: ',
+                choices: [
+                    'Research and Development',
+                    'Human Resources',
+                    'Legal',
+                    'Administrative',
+                    'Manpower',
+                    'Return',
+                ],
+            })
+        .then((answer)=>{
+            let employeeArray = [];
+                    let itemDirections = ({id, first_name, last_name, role_id, manager_id}) =>{
+                    const placeHolder = new app.Employee(`${id}`, `${first_name}`, `${last_name}`, `${role_id}`,  `${manager_id}`);
+                    employeeArray.push(placeHolder);
+                    };
+                    function callBack(err, res) {
+                        if (err)
+                            throw err;
+                        res.forEach(itemDirections);
+                        console.table(employeeArray);
+                        console.log("Finished printing!");
+                        console.log(`-----------------------------------------`);
+                        initialize();
+                    };
+            switch(answer.deptPick){
+                case 'Research and Development':
+                    console.log("Fetching all employees under this department...");
+                    let theQuery = `SELECT * FROM employee WHERE role_id=1`;
+                    connection.query(theQuery,callBack);
+                    break;
+                case 'Human Resources':
+                    console.log("Fetching all employees under this department...");
+                    let theQuery2 = `SELECT * FROM employee WHERE role_id=2`;
+                    connection.query(theQuery2,callBack);
+                    break;
+                case 'Legal':
+                    console.log("Fetching all employees under this department...");
+                    let theQuery3 = `SELECT * FROM employee WHERE role_id=3`;
+                    connection.query(theQuery3,callBack);
+                    break; 
+                case 'Administrative':
+                    console.log("Fetching all employees under this department...");
+                    let theQuery4 = `SELECT * FROM employee WHERE role_id=4`;
+                    connection.query(theQuery4,callBack);
+                    break;    
+                case 'Manpower':
+                    console.log("Fetching all employees under this department...");
+                    let theQuery5 = `SELECT * FROM employee WHERE role_id=5`;
+                    connection.query(theQuery5,callBack);
+                    break;
+                case 'Return':
+                    console.log("<---");
+                    break;               
+            }
+        })    
+};
 // add employee
 // print ebriting
 // add
