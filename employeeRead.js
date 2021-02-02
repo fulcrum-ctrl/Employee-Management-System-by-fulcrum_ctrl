@@ -91,6 +91,7 @@ const initialize = () => {
                 'View all employees',
                 'View all departments',
                 'View all roles',
+                'Search for employee record',
                 'View all employees by department',
                 'View all employees by manager',
                 'Add an employee',
@@ -123,6 +124,11 @@ const initialize = () => {
                     console.log("Fetching current employee log...");
                     addEmployee();
                     // initialize();
+                    break;
+
+                case 'Search for employee record':
+                    console.log("Fetching specific employee record...");
+                    searchEmployee();
                     break;
 
                 case 'exit':
@@ -235,6 +241,58 @@ const employeeByDept = () => {
             }
         })    
 };
+
+const searchEmployee = () => {
+    let callBack = (err,res) => {
+        if (err) throw err;
+        res.forEach(itemDirections);
+        console.table(employeeArray);
+        console.log("Finished printing!");
+        console.log(`-----------------------------------------`); 
+        initialize();
+    };
+    let employeeArray = [];
+    let itemDirections = ({id, first_name, last_name, role_id, manager_id}) =>{
+        const placeHolder = new app.Employee(`${id}`, `${first_name}`, `${last_name}`, `${role_id}`,  `${manager_id}`);
+        employeeArray.push(placeHolder);
+    };  
+    inquirer
+        .prompt([
+            {
+            name: 'first_name',
+            type: 'input',
+            message: 'Input first name of employee: '
+            },
+            {
+            name: 'last_name',
+            type: 'input',
+            message: 'Input last name of employee: '
+            },
+        ])
+        .then((answer)=>{
+            connection.query(
+                'SELECT * FROM employee WHERE ?',
+                [{
+                    first_name: answer.first_name,
+                    
+                },
+                {
+                    last_name: answer.last_name,
+                }
+                ],
+                callBack
+            );
+        })
+};
+
+const updateEmployee = () => {
+// allow user input for employee name 
+// make into separate function
+// print details of employee
+// allow editing
+};
+
+const employeeByManager = () => {};
 // add employee
 // print ebriting
 // add
