@@ -4,26 +4,20 @@ CREATE DATABASE employee_managementDB;
 
 USE employee_managementDB;
 
-CREATE TABLE department(
-    id INT AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
-    PRIMARY KEY(id)
-);
-
 
 CREATE TABLE department(
-    id INT AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
-    PRIMARY KEY(id)
+    dept_id INT AUTO_INCREMENT,
+    dept_name VARCHAR(30) NOT NULL,
+    PRIMARY KEY(dept_id)
 );
 
 CREATE TABLE role(
-    id INT AUTO_INCREMENT,
+    roleId INT AUTO_INCREMENT,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL(10,2) NOT NULL,
     department_id INT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (department_id) REFERENCES department(id)
+    PRIMARY KEY (roleId),
+    FOREIGN KEY (department_id) REFERENCES department(dept_id)
 );
 
 CREATE TABLE employee(
@@ -33,7 +27,7 @@ CREATE TABLE employee(
     role_id INT,
     manager_id INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (role_id) REFERENCES role(id)
+    FOREIGN KEY (role_id) REFERENCES role(roleId)
 );
 
 -- populate with ten employees to get ball rolling
@@ -41,7 +35,7 @@ CREATE TABLE employee(
 -- FKs, link them to role table and dept table
 -- manager_id can be null
 -- RnD: 1, HR: 2, Legal: 3, Admin: 4
-INSERT INTO department (name) VALUES ("Research and Development"),("Human Resources"),("Legal"),("Administrative"),("Manpower");
+INSERT INTO department (dept_name) VALUES ("Research and Development"),("Human Resources"),("Legal"),("Administrative"),("Manpower");
 
 
 INSERT INTO role (title,salary,department_id) 

@@ -27,9 +27,11 @@ connection.connect((err)=>{
 // console table uses this for sorting
 // same premise for succeeding functions
 // each array element is seen as one row in db
+// create global version of employee array for referencing later
+let globalArray = [];
 
 const queryAllEmployees = () =>{
-    let theQuery = 'SELECT * FROM employee';
+    let theQuery = 'SELECT * FROM employee LEFT JOIN role ON employee.role_id=role.roleId LEFT JOIN department ON role.department_id=department.dept_id';
     let callBack = (err,res) => {
         if (err) throw err;
         res.forEach(itemDirections);
@@ -39,10 +41,11 @@ const queryAllEmployees = () =>{
         initialize();
     };
     let employeeArray = [];
-    let itemDirections = ({id, first_name, last_name, role_id, manager_id}) =>{
-        const placeHolder = new app.Employee(`${id}`, `${first_name}`, `${last_name}`, `${role_id}`,  `${manager_id}`);
+    let itemDirections = ({id, first_name, last_name, role_id, manager_id, title, salary, dept_name}) =>{
+        const placeHolder = new app.Employee(`${id}`, `${first_name}`, `${last_name}`, `${role_id}`,  `${manager_id}`, `${title}`, `${salary}`, `${dept_name}`);
         employeeArray.push(placeHolder);
     };  
+    globalArray = employeeArray;
     connection.query(theQuery, callBack);
 };
 
@@ -56,8 +59,8 @@ const queryAllDepartments = () =>{
         initialize(); 
     };
     let departmentArray = [];
-    let itemDirections = ({id, name}) =>{
-        const placeHolder = new app.Department(`${id}`, `${name}`);
+    let itemDirections = ({dept_id, dept_name}) =>{
+        const placeHolder = new app.Department(`${dept_id}`, `${dept_name}`);
         departmentArray.push(placeHolder);
     };    
     connection.query(theQuery, callBack);      
@@ -67,8 +70,8 @@ const queryAllRoles = () =>{
     let theQuery = 'SELECT * FROM role';
     let roleArray = [];
    
-    let itemDirections = ({id, title, salary, department_id,}) =>{
-        const placeHolder = new app.Role(`${id}`, `${title}`, `${salary}`, `${department_id}`);
+    let itemDirections = ({roleId, title, salary, department_id,}) =>{
+        const placeHolder = new app.Role(`${roleId}`, `${title}`, `${salary}`, `${department_id}`);
         roleArray.push(placeHolder);
     };  
     let callBack = (err,res) => {
@@ -94,6 +97,7 @@ const initialize = () => {
                 'Search for employee record',
                 'View all employees by department',
                 'View all employees by manager',
+                'Update employee record',
                 'Add an employee',
                 'exit',
             ],
@@ -124,6 +128,10 @@ const initialize = () => {
                     console.log("Fetching current employee log...");
                     addEmployee();
                     // initialize();
+                    break;
+
+                case 'Update employee record':
+                    updateEmployee();
                     break;
 
                 case 'Search for employee record':
@@ -168,6 +176,7 @@ const addEmployee = () => {
                     last_name: answer.last_name,
                     role_id: answer.role_id,
                 },
+
                 (err) => {
                     if (err) throw err;
                     console.log("New slave added!");
@@ -248,8 +257,8 @@ const searchEmployee = () => {
         res.forEach(itemDirections);
         console.table(employeeArray);
         console.log("Finished printing!");
-        console.log(`-----------------------------------------`); 
-        initialize();
+        console.log(`-----------------------------------------`);
+        initialize(); 
     };
     let employeeArray = [];
     let itemDirections = ({id, first_name, last_name, role_id, manager_id}) =>{
@@ -286,13 +295,20 @@ const searchEmployee = () => {
 };
 
 const updateEmployee = () => {
-// allow user input for employee name 
+    
+    // allow user input for employee name 
 // make into separate function
 // print details of employee
 // allow editing
 };
 
-const employeeByManager = () => {};
-// add employee
-// print ebriting
-// add
+// const employeeByManager = () => {
+//     // display list of available managers
+//     // user picks one
+//     // display all employees under that manager
+//     // query muna
+//     // under query would be .prompt
+//     let initialQuery = 'SELECT * FROM employee WHERE role_id=1';
+//     let managerArray = [];
+//     let itemDirections = 
+// };
