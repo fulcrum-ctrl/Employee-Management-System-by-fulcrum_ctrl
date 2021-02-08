@@ -17,6 +17,16 @@ const connection = mysql.createConnection(connectConfig);
 // main callback, initializes app
 connection.connect((err)=>{
     if (err) throw err;
+    console.log(` 
+    /$$      /$$ /$$$$$$$$ /$$        /$$$$$$   /$$$$$$  /$$      /$$ /$$$$$$$$
+    | $$  /$ | $$| $$_____/| $$       /$$__  $$ /$$__  $$| $$$    /$$$| $$_____/
+    | $$ /$$$| $$| $$      | $$      | $$  \__/| $$  \ $$| $$$$  /$$$$| $$      
+    | $$/$$ $$ $$| $$$$$   | $$      | $$      | $$  | $$| $$ $$/$$ $$| $$$$$   
+    | $$$$_  $$$$| $$__/   | $$      | $$      | $$  | $$| $$  $$$| $$| $$__/   
+    | $$$/ \  $$$| $$      | $$      | $$    $$| $$  | $$| $$\  $ | $$| $$      
+    | $$/   \  $$| $$$$$$$$| $$$$$$$$|  $$$$$$/|  $$$$$$/| $$ \/  | $$| $$$$$$$$
+    |__/     \__/|________/|________/ \______/  \______/ |__/     |__/|________/
+    `);
     console.log(`Connected as id ${connection.threadId}`);
     initialize();
 });
@@ -205,8 +215,8 @@ const employeeByDept = () => {
             })
         .then((answer)=>{
             let employeeArray = [];
-                    let itemDirections = ({id, first_name, last_name, role_id, manager_id}) =>{
-                    const placeHolder = new app.Employee(`${id}`, `${first_name}`, `${last_name}`, `${role_id}`,  `${manager_id}`);
+                    let itemDirections = ({id, first_name, last_name, role_id, manager_id, title, salary, dept_name}) =>{
+                    const placeHolder = new app.Employee(`${id}`, `${first_name}`, `${last_name}`, `${role_id}`,  `${manager_id}`, `${title}`, `${salary}`, `${dept_name}`);
                     employeeArray.push(placeHolder);
                     };
                     function callBack(err, res) {
@@ -221,27 +231,27 @@ const employeeByDept = () => {
             switch(answer.deptPick){
                 case 'Research and Development':
                     console.log("Fetching all employees under this department...");
-                    let theQuery = `SELECT * FROM employee WHERE role_id=1`;
+                    let theQuery = `SELECT * FROM employee LEFT JOIN role ON employee.role_id=role.roleId LEFT JOIN department ON role.department_id=department.dept_id WHERE role_id=1`;
                     connection.query(theQuery,callBack);
                     break;
                 case 'Human Resources':
                     console.log("Fetching all employees under this department...");
-                    let theQuery2 = `SELECT * FROM employee WHERE role_id=2`;
+                    let theQuery2 = `SELECT * FROM employee LEFT JOIN role ON employee.role_id=role.roleId LEFT JOIN department ON role.department_id=department.dept_id WHERE role_id=2`;
                     connection.query(theQuery2,callBack);
                     break;
                 case 'Legal':
                     console.log("Fetching all employees under this department...");
-                    let theQuery3 = `SELECT * FROM employee WHERE role_id=3`;
+                    let theQuery3 = `SELECT * FROM employee LEFT JOIN role ON employee.role_id=role.roleId LEFT JOIN department ON role.department_id=department.dept_id WHERE role_id=3`;
                     connection.query(theQuery3,callBack);
                     break; 
                 case 'Administrative':
                     console.log("Fetching all employees under this department...");
-                    let theQuery4 = `SELECT * FROM employee WHERE role_id=4`;
+                    let theQuery4 = `SELECT * FROM employee LEFT JOIN role ON employee.role_id=role.roleId LEFT JOIN department ON role.department_id=department.dept_id WHERE role_id=4`;
                     connection.query(theQuery4,callBack);
                     break;    
                 case 'Manpower':
                     console.log("Fetching all employees under this department...");
-                    let theQuery5 = `SELECT * FROM employee WHERE role_id=5`;
+                    let theQuery5 = `SELECT * FROM employee LEFT JOIN role ON employee.role_id=role.roleId LEFT JOIN department ON role.department_id=department.dept_id WHERE role_id=5`;
                     connection.query(theQuery5,callBack);
                     break;
                 case 'Return':
@@ -261,8 +271,8 @@ const searchEmployee = () => {
         initialize(); 
     };
     let employeeArray = [];
-    let itemDirections = ({id, first_name, last_name, role_id, manager_id}) =>{
-        const placeHolder = new app.Employee(`${id}`, `${first_name}`, `${last_name}`, `${role_id}`,  `${manager_id}`);
+    let itemDirections = ({id, first_name, last_name, role_id, manager_id, title, salary, dept_name}) =>{
+        const placeHolder = new app.Employee(`${id}`, `${first_name}`, `${last_name}`, `${role_id}`,  `${manager_id}`, `${title}`, `${salary}`, `${dept_name}`);
         employeeArray.push(placeHolder);
     };  
     inquirer
@@ -280,7 +290,7 @@ const searchEmployee = () => {
         ])
         .then((answer)=>{
             connection.query(
-                'SELECT * FROM employee WHERE ?',
+                'SELECT * FROM employee LEFT JOIN role ON employee.role_id=role.roleId LEFT JOIN department ON role.department_id=department.dept_id WHERE ?',
                 [{
                     first_name: answer.first_name,
                     
@@ -295,20 +305,40 @@ const searchEmployee = () => {
 };
 
 const updateEmployee = () => {
-    
-    // allow user input for employee name 
-// make into separate function
-// print details of employee
-// allow editing
+// wc employee would you like to update
+// inq prompt list
+// how to make it dynamic?
+// use global array
+// how to fill it without running queryAllEmployee?
+// global array should contain just names
+
+let initialQuery = 'SELECT * FROM employee';
+let callBack = (err, res) => {
+    if (err) throw err;
+    res.forEach(itemDirections);
+    inquirer
+    .prompt({
+        name: "employee",
+        type: "list",
+        message: "Pick employee you would like to update: ",
+        choices: emptyArray,
+    })
+    .then((answer)=>{
+        let splitter = answer.employee.split(" ");
+        console.log(splitter);
+        // return?
+        console.log("You are updating: ", answer.employee);
+    });
+};
+let emptyArray = [];
+let itemDirections = ({first_name, last_name}) => {
+    const placeHolder = `${first_name} ${last_name}`;
+    emptyArray.push(placeHolder);
+    };
+connection.query(initialQuery,callBack);
+
 };
 
-// const employeeByManager = () => {
-//     // display list of available managers
-//     // user picks one
-//     // display all employees under that manager
-//     // query muna
-//     // under query would be .prompt
-//     let initialQuery = 'SELECT * FROM employee WHERE role_id=1';
-//     let managerArray = [];
-//     let itemDirections = 
-// };
+const employeeByManager = () => {
+
+};

@@ -19,7 +19,8 @@ function Role(roleId, title, salary, department_id){
     this.department_id = department_id;
 };
 
+
+
 exports.Employee = Employee;
 exports.Department = Department;
 exports.Role = Role;
-
