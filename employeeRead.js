@@ -108,6 +108,7 @@ const initialize = () => {
                 'Search for employee record',
                 'Add Department',
                 'Add an employee',
+                'Add Role',
                 'View all employees by department',
                 'View all employees by manager',
                 'Update employee record',
@@ -144,6 +145,10 @@ const initialize = () => {
 
                 case 'Add Department':
                     addDept();    
+                    break;
+                
+                case 'Add Role':
+                    addRole();
                     break;
 
                 case 'Update employee record':
@@ -448,8 +453,118 @@ const addEmployee = () => {
                     break;
             };
         });
-    };
-const addRole = () => {
 };
 
+const addRole = () => {
+    //title
+    //salary
+    // will require validate 
+    //wc dept (dept_id)
+    inquirer
+        .prompt([{
+            name: "title",
+            type: "input",
+            message: "Enter title of new role: ",
+        },{
+            name:"salary",
+            type: "number",
+            message: "Enter a figure for this role's salary: ",
+            validate: async (salary) => {
+                if (typeof salary !== 'number') {
+                    return 'Input has to be a number';
+                }
+                return true;
+            }
+        },{
+            name: "department",
+            type: "list",
+            message: "Pick department for this role: ",
+            choices: [
+                "Research and Development",
+                "Human Resources",
+                "Legal",
+                "Administrative",
+                "Manpower",
+            ]
+        }
+    ])
+    .then((answer)=>{
+        switch (answer.department) {
+            case "Research and Development":
+                connection.query(
+                    'INSERT INTO role SET ?',
+                    {
+                        title: answer.title,
+                        salary: answer.salary,
+                        department_id: 1,
+                    },
+                    (err) => {
+                        if (err) throw err;
+                        console.log("New slave role added!");
+                        initialize();
+                    });
+                    break;
+
+            case "Human Resources":
+                connection.query(
+                    'INSERT INTO role SET ?',
+                    {
+                        title: answer.title,
+                        salary: answer.salary,
+                        department_id: 2,
+                    },
+                    (err) => {
+                        if (err) throw err;
+                        console.log("New slave role added!");
+                        initialize();
+                    });
+                    break;
+            
+            case "Legal":
+                connection.query(
+                    'INSERT INTO role SET ?',
+                    {
+                        title: answer.title,
+                        salary: answer.salary,
+                        department_id: 3,
+                    },
+                    (err) => {
+                        if (err) throw err;
+                        console.log("New slave role added!");
+                        initialize();
+                    });
+                    break;
+
+            case "Administrative":
+                connection.query(
+                    'INSERT INTO role SET ?',
+                    {
+                        title: answer.title,
+                        salary: answer.salary,
+                        department_id: 4,
+                    },
+                    (err) => {
+                        if (err) throw err;
+                        console.log("New slave role added!");
+                        initialize();
+                    });
+                    break;
+
+            case "Manpower":
+                connection.query(
+                    'INSERT INTO role SET ?',
+                    {
+                        title: answer.title,
+                        salary: answer.salary,
+                        department_id: 5,
+                    },
+                    (err) => {
+                        if (err) throw err;
+                        console.log("New slave role added!");
+                        initialize();
+                    });
+                    break;
+        };
+    });
+    };
 
