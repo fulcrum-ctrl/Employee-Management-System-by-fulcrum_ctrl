@@ -107,10 +107,10 @@ const initialize = () => {
                 'View all roles',
                 'Search for employee record',
                 'Add Department',
+                'Add an employee',
                 'View all employees by department',
                 'View all employees by manager',
                 'Update employee record',
-                'Add an employee',
                 'exit',
             ],
         })
@@ -166,45 +166,7 @@ const initialize = () => {
         });
 };
 // add validate + role id/manager id later
-const addEmployee = () => {
-    console.log("Printing all current employees...");
-    // queryAllEmployees();
-    inquirer    
-        .prompt([
-            {
-            name: 'first_name',
-            type: 'input',
-            message: 'Input first name of employee: '
-            },
-            {
-            name: 'last_name',
-            type: 'input',
-            message: 'Input last name of employee: '
-            },
-            {
-            name: 'role_id',
-            type: 'input',
-            message: 'Input role ID of employee: '
-            },
-        ])
-        .then((answer)=>{
-            connection.query(
-                'INSERT INTO employee SET ?',
-                {
-                    first_name: answer.first_name,
-                    last_name: answer.last_name,
-                    role_id: answer.role_id,
-                },
 
-                (err) => {
-                    if (err) throw err;
-                    console.log("New slave added!");
-                    initialize();
-                }
-            );
-        });
-
-};
 // functional
 const employeeByDept = () => {
     inquirer
@@ -358,7 +320,7 @@ inquirer
 const removeEmployee = () => {
 
 };
-
+// functional
 const addDept = () => {
     inquirer
         .prompt({
@@ -378,7 +340,115 @@ const addDept = () => {
             );
         });
 };
-
+const addEmployee = () => {
+    inquirer
+        .prompt([{
+            name: "first_name",
+            type: "input",
+            message: "Enter first name of new employee: ",
+        },{
+            name: "last_name",
+            type: "input",
+            message: "Enter last name of new employee: ",
+        },{
+            name: "role_id",
+            type: "list",
+            message: "Pick role for new employee: ",
+            choices: [
+                "Manager",
+                "Researcher",
+                "Legal Liaison",
+                "HR Person",
+                "Grunt",
+            ]
+        }
+    
+    ])
+        .then((answer)=>{
+            
+            switch (answer.role_id) {
+                case "Manager":
+                    connection.query(
+                        'INSERT INTO employee SET ?',
+                        {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: 1,
+                        },
+                        (err) => {
+                            if (err) throw err;
+                            console.log("New slave added!");
+                            initialize();
+                        }
+                    );
+                    break;
+                
+                case "Researcher":
+                    connection.query(
+                        'INSERT INTO employee SET ?',
+                        {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: 2,
+                        },
+                        (err) => {
+                            if (err) throw err;
+                            console.log("New slave added!");
+                            initialize();
+                        }
+                    );
+                    break;
+    
+                case "Legal Liaison":
+                    connection.query(
+                        'INSERT INTO employee SET ?',
+                        {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: 3,
+                        },
+                        (err) => {
+                            if (err) throw err;
+                            console.log("New slave added!");
+                            initialize();
+                        }
+                    );
+                    break;
+                
+                case "HR Person":
+                    connection.query(
+                        'INSERT INTO employee SET ?',
+                        {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: 4,
+                        },
+                        (err) => {
+                            if (err) throw err;
+                            console.log("New slave added!");
+                            initialize();
+                        }
+                    );
+                    break;
+    
+                case "Grunt":
+                    connection.query(
+                        'INSERT INTO employee SET ?',
+                        {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: 5,
+                        },
+                        (err) => {
+                            if (err) throw err;
+                            console.log("New slave added!");
+                            initialize();
+                        }
+                    );
+                    break;
+            };
+        });
+    };
 const addRole = () => {
 };
 
