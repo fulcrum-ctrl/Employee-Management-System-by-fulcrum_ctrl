@@ -30,7 +30,7 @@ connection.connect((err)=>{
     console.log(`Connected as id ${connection.threadId}`);
     initialize();
 });
-
+var superArray = [];
 // prints all employees
 // creates constructor function and empty array
 // constructor elements are pushed into array
@@ -38,8 +38,9 @@ connection.connect((err)=>{
 // same premise for succeeding functions
 // each array element is seen as one row in db
 // create global version of employee array for referencing later
-let globalArray = [];
 
+
+//functional
 const queryAllEmployees = () =>{
     let theQuery = 'SELECT * FROM employee LEFT JOIN role ON employee.role_id=role.roleId LEFT JOIN department ON role.department_id=department.dept_id';
     let callBack = (err,res) => {
@@ -58,7 +59,7 @@ const queryAllEmployees = () =>{
     globalArray = employeeArray;
     connection.query(theQuery, callBack);
 };
-
+//functional
 const queryAllDepartments = () =>{
     let theQuery = 'SELECT * FROM department';
     let callBack = (err,res) => {
@@ -75,7 +76,7 @@ const queryAllDepartments = () =>{
     };    
     connection.query(theQuery, callBack);      
 };
-
+//functional
 const queryAllRoles = () =>{
     let theQuery = 'SELECT * FROM role';
     let roleArray = [];
@@ -93,7 +94,7 @@ const queryAllRoles = () =>{
     };
     connection.query(theQuery,callBack);    
 };
-
+// functional
 const initialize = () => {
     inquirer
         .prompt({
@@ -105,6 +106,7 @@ const initialize = () => {
                 'View all departments',
                 'View all roles',
                 'Search for employee record',
+                'Add Department',
                 'View all employees by department',
                 'View all employees by manager',
                 'Update employee record',
@@ -140,7 +142,14 @@ const initialize = () => {
                     // initialize();
                     break;
 
+                case 'Add Department':
+                    addDept();    
+                    break;
+
                 case 'Update employee record':
+                    console.log("Employee array at start: ", superArray);
+                    internalUpdate();
+                    console.log("Employee array after internal update: ", superArray);
                     updateEmployee();
                     break;
 
@@ -196,7 +205,7 @@ const addEmployee = () => {
         });
 
 };
-
+// functional
 const employeeByDept = () => {
     inquirer
         .prompt(
@@ -260,7 +269,7 @@ const employeeByDept = () => {
             }
         })    
 };
-
+// functional
 const searchEmployee = () => {
     let callBack = (err,res) => {
         if (err) throw err;
@@ -303,42 +312,74 @@ const searchEmployee = () => {
             );
         })
 };
-
-const updateEmployee = () => {
-// wc employee would you like to update
-// inq prompt list
-// how to make it dynamic?
-// use global array
-// how to fill it without running queryAllEmployee?
-// global array should contain just names
-
-let initialQuery = 'SELECT * FROM employee';
-let callBack = (err, res) => {
-    if (err) throw err;
-    res.forEach(itemDirections);
-    inquirer
-    .prompt({
-        name: "employee",
-        type: "list",
-        message: "Pick employee you would like to update: ",
-        choices: emptyArray,
-    })
-    .then((answer)=>{
-        let splitter = answer.employee.split(" ");
-        console.log(splitter);
-        // return?
-        console.log("You are updating: ", answer.employee);
-    });
-};
-let emptyArray = [];
-let itemDirections = ({first_name, last_name}) => {
-    const placeHolder = `${first_name} ${last_name}`;
-    emptyArray.push(placeHolder);
+// wip
+const internalUpdate = () => {
+    
+    let theQuery = 'SELECT * FROM employee';
+    let itemDirections = ({first_name, last_name}) => {
+        const placeHolder = `${first_name} ${last_name}`;
+        superArray.push(placeHolder);
     };
-connection.query(initialQuery,callBack);
+    let callBack = (err,res) => {
+        if (err) throw err;
+        res.forEach(itemDirections);
+        
+};
+connection.query(theQuery, callBack);    
+};
+// wip
+const updateEmployee = () => {
+console.log("Fetching list of available employees...");
+inquirer
+    .prompt([{
+        name: "pickEmployee",
+        type: "list",
+        message: "Pick an employee you would like to update: ",
+        choices: superArray,
+    },{
+        name: "newRole",
+        type: "list",
+        message: "Pick a new role for employee: ",
+        choices: [
+            "Manager",
+            "Researcher",
+            "Legal Liaison",
+            "HR Person",
+            "Grunt",
+        ]
+    }])
+    .then((answer)=>{
+        console.log("You are updating: ", answer.pickEmployee);
+        console.log("New role: ", answer.newRole);
+    })
+
+};
+// wip
+const removeEmployee = () => {
 
 };
 
-const employeeByManager = () => {
-
+const addDept = () => {
+    inquirer
+        .prompt({
+            name: "newDept",
+            type: "input",
+            message: "Enter new department name: ",
+         })
+        .then((answer) => {
+            connection.query(`INSERT INTO department SET ?`,
+                {dept_name: answer.newDept},
+                
+                (err) => {
+                    if (err) throw err;
+                    console.log("New slave department added!");
+                    initialize();
+                }
+            );
+        });
 };
+
+const addRole = () => {
+};
+
+
