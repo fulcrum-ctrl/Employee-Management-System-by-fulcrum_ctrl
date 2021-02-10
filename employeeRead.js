@@ -152,9 +152,9 @@ const initialize = () => {
                     break;
 
                 case 'Update employee record':
-                    console.log("Employee array at start: ", superArray);
-                    internalUpdate();
-                    console.log("Employee array after internal update: ", superArray);
+                    console.log("Employee array at start: ", superArray); //empty
+                    internalUpdate(); // should populate
+                    console.log("Employee array after internal update: ", superArray); // should contain elementsddd
                     updateEmployee();
                     break;
 
@@ -280,12 +280,13 @@ const searchEmployee = () => {
         })
 };
 // wip
-const internalUpdate = () => {
+const internalUpdate = async () => {
     
     let theQuery = 'SELECT * FROM employee';
     let itemDirections = ({first_name, last_name}) => {
         const placeHolder = `${first_name} ${last_name}`;
         superArray.push(placeHolder);
+
     };
     let callBack = (err,res) => {
         if (err) throw err;
